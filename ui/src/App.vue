@@ -76,7 +76,7 @@
         <div class="result fill"
              ref="searchResultsContainerDom"
         >
-            <image-clip v-for="photo in searchResults"
+            <image-clip v-for="photo in pagedData"
                         class="item"
                         :src="photo.url"
                         :width="200"
@@ -88,6 +88,15 @@
                         :flip="photo.flipped"
                         @click="onClickPhoto(photo)"
             />
+            <div class="example-pagination-block">
+                <el-pagination
+                    layout="prev, pager, next" 
+                    v-model:current-page="currentPage"
+                    :page-size="pageSize"
+                    :total="searchResults.length"
+                    @current-change="handlePageChange"
+                />
+            </div>
         </div>
     </div>
 
@@ -142,6 +151,16 @@
             float: left;
             margin: 0 4px 4px;
         }
+
+
     }
+}
+
+.example-pagination-block{
+    position: absolute;
+    margin-bottom: 16px;
+    bottom: 0;
+    right: 16px;
+    z-index: 999;
 }
 </style>

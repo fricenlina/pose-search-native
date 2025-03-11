@@ -18,6 +18,7 @@ import PoseMatcher from './search/matcher/PoseMatcher';
 import ShoulderMatcher from './search/matcher/ShoulderMatcher';
 import {search, SearchResult} from './search/search';
 
+
 export default defineComponent({
     components: {
         ImageClip,
@@ -107,6 +108,17 @@ export default defineComponent({
         const imageFlip = ref(false);
         const showImageViewer = ref(false);
 
+        const currentPage = ref(1);
+        const pageSize = ref(25);
+        const pagedData = computed(() => {
+            console.log('searchResults.value.length', searchResults.value.length)
+            const startIndex = (currentPage.value - 1) * pageSize.value;
+            return searchResults.value.slice(startIndex, startIndex + pageSize.value);
+          });
+        const handlePageChange = (page: any) => {
+            console.log(`当前页码: ${page}`);
+          }
+
         async function onSearch() {
             searchResults.value = [];
             searchResultsContainerDom.value!.scrollTop = 0;
@@ -117,7 +129,8 @@ export default defineComponent({
                 result.push(...await search(model, path, matcher));
             }
             result.sort((a, b) => b.score - a.score);
-            searchResults.value = result.slice(0, Math.min(50, result.length));
+            searchResults.value = result;
+            // searchResults.value = result.slice(0, Math.min(50, result.length));
         }
 
         function onClickPhoto(photo: SearchResult) {
@@ -144,6 +157,10 @@ export default defineComponent({
             imageUrl,
             imageFlip,
             showImageViewer,
+            currentPage,
+            pageSize,
+            pagedData,
+            handlePageChange,
             onSearch,
             onClickPhoto,
         };
